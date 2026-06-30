@@ -1,0 +1,366 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Guardianes de la Naturaleza - Juego Educativo para Preescolar</title>
+    <meta name="description" content="Juego interactivo diseñado para niños de preescolar (3 a 6 años) en aulas unitarias. Enseña el cuidado, conservación y empatía por las plantas y animales del entorno natural.">
+    <link rel="stylesheet" href="style.css">
+    <!-- Google Fonts: Fredoka para un diseño redondeado y amigable -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Fredoka:wght@300..700&display=swap" rel="stylesheet">
+</head>
+<body>
+
+    <!-- Contenedor principal del juego con Glassmorphism -->
+    <main id="app-container">
+        
+        <!-- ================= PANTALLA 1: BIENVENIDA Y CONFIGURACIÓN ================= -->
+        <section id="screen-welcome" class="screen active">
+            <div class="welcome-header">
+                <div class="logo-container">
+                    <!-- SVG del Logo / Elemento natural decorativo -->
+                    <svg viewBox="0 0 100 100" class="logo-svg">
+                        <circle cx="50" cy="50" r="45" fill="#e8f5e9" stroke="#81c784" stroke-width="4"/>
+                        <path d="M50 15 C30 35 30 65 50 85 C70 65 70 35 50 15 Z" fill="#4caf50"/>
+                        <path d="M50 30 C40 45 40 65 50 75 C60 65 60 45 50 30 Z" fill="#81c784"/>
+                        <circle cx="50" cy="45" r="5" fill="#fff"/>
+                        <path d="M50 85 L50 95" stroke="#8d6e63" stroke-width="6" stroke-linecap="round"/>
+                    </svg>
+                </div>
+                <h1>Guardianes de la Naturaleza</h1>
+                <p class="subtitle">¡Ayuda a cuidar las plantas y los animales!</p>
+            </div>
+
+            <div class="setup-container">
+                <!-- Modo de Juego -->
+                <div class="setup-group">
+                    <h3>👥 ¿Quién va a jugar?</h3>
+                    <div class="toggle-buttons" role="radiogroup" aria-label="Modo de juego">
+                        <button type="button" id="btn-mode-individual" class="toggle-btn active" role="radio" aria-checked="true">
+                            <span class="btn-icon">🧒</span> Solo yo
+                        </button>
+                        <button type="button" id="btn-mode-teams" class="toggle-btn" role="radio" aria-checked="false">
+                            <span class="btn-icon">👥</span> Por equipos
+                        </button>
+                    </div>
+                </div>
+
+                <!-- Selección de Edad / Adaptación Curricular -->
+                <div class="setup-group">
+                    <h3>🎂 ¿Cuántos años tienes?</h3>
+                    <div class="toggle-buttons" role="radiogroup" aria-label="Edad del jugador">
+                        <button type="button" id="btn-age-3" class="toggle-btn" role="radio" aria-checked="false">
+                            <span class="btn-icon">🐣</span> 3 años
+                        </button>
+                        <button type="button" id="btn-age-4" class="toggle-btn active" role="radio" aria-checked="true">
+                            <span class="btn-icon">🐿️</span> 4 años
+                        </button>
+                        <button type="button" id="btn-age-5" class="toggle-btn" role="radio" aria-checked="false">
+                            <span class="btn-icon">🦊</span> 5 años
+                        </button>
+                    </div>
+                    <p class="age-info" id="age-adaptation-info">Dificultad estándar y clasificación completa.</p>
+                </div>
+
+                <!-- Nombres de los Participantes -->
+                <div class="setup-group" id="player-names-group">
+                    <h3>✍️ Escribe tu nombre:</h3>
+                    <input type="text" id="input-player-name" class="input-text" placeholder="Tu nombre aquí..." value="Guardiana/o" maxlength="15">
+                    
+                    <div id="team-names-inputs" class="hidden">
+                        <div class="team-input-row">
+                            <label for="input-team-1">🍃 Equipo 1:</label>
+                            <input type="text" id="input-team-1" class="input-text" placeholder="Nombre Equipo 1" value="Equipo Hoja Verde" maxlength="18">
+                        </div>
+                        <div class="team-input-row">
+                            <label for="input-team-2">🌸 Equipo 2:</label>
+                            <input type="text" id="input-team-2" class="input-text" placeholder="Nombre Equipo 2" value="Equipo Flor Naranja" maxlength="18">
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Botón Iniciar -->
+                <button type="button" id="btn-start-game" class="btn-huge pulse">
+                    ¡COMENZAR AVENTURA! 🚀
+                </button>
+            </div>
+
+            <!-- Botón de Acceso para Docentes en esquina -->
+            <button type="button" id="btn-teacher-dashboard-trigger" class="btn-teacher-trigger" title="Acceso Docente">
+                ⚙️ Evaluación Docente
+            </button>
+        </section>
+
+
+        <!-- ================= PANTALLA 2: ÁREA DE JUEGO PRINCIPAL ================= -->
+        <section id="screen-gameplay" class="screen">
+            
+            <!-- Barra Superior de Progreso e Info -->
+            <header class="game-header">
+                <div class="header-left">
+                    <button type="button" id="btn-go-home" class="btn-circle" title="Volver al menú">🏡</button>
+                    <div class="team-indicator-bubble" id="team-turn-display">
+                        <!-- Se llena dinámicamente -->
+                        <span>👤 Jugando</span>
+                    </div>
+                </div>
+
+                <div class="header-center">
+                    <div class="level-indicator">
+                        <span id="level-title-display">Nivel 1: ¿Quién vive aquí?</span>
+                        <div class="stars-bar" id="stars-container">
+                            <span class="star-slot" data-level="1">⭐</span>
+                            <span class="star-slot" data-level="2">⭐</span>
+                            <span class="star-slot" data-level="3">⭐</span>
+                            <span class="star-slot" data-level="4">⭐</span>
+                            <span class="star-slot" data-level="5">⭐</span>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="header-right">
+                    <!-- Insignias obtenidas en miniatura -->
+                    <div class="header-badges">
+                        <div id="badge-plants-mini" class="badge-mini locked" title="Insignia Amigo de las Plantas">🌿</div>
+                        <div id="badge-animals-mini" class="badge-mini locked" title="Insignia Protector de los Animales">🐾</div>
+                    </div>
+                    <button type="button" id="btn-voice-toggle" class="btn-circle" title="Activar/Desactivar Voz">🔊</button>
+                    <button type="button" id="btn-voice-repeat" class="btn-circle" title="Repetir instrucción">💬</button>
+                </div>
+            </header>
+
+            <!-- Contenido Principal del Nivel Activo -->
+            <div id="level-workspace" class="level-workspace">
+                <!-- Se inyecta la pantalla del nivel activo dinámicamente aquí -->
+            </div>
+
+            <!-- Área del Narrador (Lula la Ardilla) -->
+            <footer class="narrator-section">
+                <div class="narrator-bubble">
+                    <div class="bubble-arrow"></div>
+                    <p id="narrator-text">¡Hola! Soy Lula la Ardilla y seré tu guía. ¿Estás listo para cuidar la naturaleza?</p>
+                </div>
+                <div class="narrator-character-container" id="lula-avatar">
+                    <!-- SVG de Lula la Ardilla con estados interactivos -->
+                    <svg viewBox="0 0 120 120" class="lula-svg" id="lula-svg-element">
+                        <!-- Cola de la ardilla -->
+                        <path d="M75 90 C110 90 125 50 100 25 C85 5 65 30 75 60" fill="#a0522d" stroke="#8b4513" stroke-width="2" id="lula-tail"/>
+                        <!-- Cuerpo -->
+                        <ellipse cx="60" cy="85" rx="30" ry="25" fill="#cd853f" stroke="#8b4513" stroke-width="2" />
+                        <ellipse cx="60" cy="88" rx="18" ry="16" fill="#ffebcd" />
+                        <!-- Cabeza -->
+                        <circle cx="60" cy="45" r="22" fill="#cd853f" stroke="#8b4513" stroke-width="2" />
+                        <!-- Orejas -->
+                        <path d="M43 30 L35 10 L50 22 Z" fill="#cd853f" stroke="#8b4513" stroke-width="2"/>
+                        <path d="M42 27 L38 13 L47 21 Z" fill="#ffebcd" />
+                        <path d="M77 30 L85 10 L70 22 Z" fill="#cd853f" stroke="#8b4513" stroke-width="2"/>
+                        <path d="M78 27 L82 13 L73 21 Z" fill="#ffebcd" />
+                        <!-- Ojos grandes de caricatura -->
+                        <circle cx="50" cy="42" r="6" fill="#fff" stroke="#8b4513" stroke-width="1"/>
+                        <circle cx="50" cy="42" r="3" fill="#333" id="lula-eye-l"/>
+                        <circle cx="48" cy="40" r="1" fill="#fff" />
+                        
+                        <circle cx="70" cy="42" r="6" fill="#fff" stroke="#8b4513" stroke-width="1"/>
+                        <circle cx="70" cy="42" r="3" fill="#333" id="lula-eye-r"/>
+                        <circle cx="68" cy="40" r="1" fill="#fff" />
+                        <!-- Mejillas rosadas -->
+                        <circle cx="42" cy="49" r="3" fill="#ffb6c1" opacity="0.8"/>
+                        <circle cx="78" cy="49" r="3" fill="#ffb6c1" opacity="0.8"/>
+                        <!-- Nariz -->
+                        <polygon points="57,48 63,48 60,51" fill="#8b4513" />
+                        <!-- Boca (se animará al hablar cambiando la forma en JS) -->
+                        <path d="M57 54 Q60 56 63 54" fill="none" stroke="#8b4513" stroke-width="2" stroke-linecap="round" id="lula-mouth"/>
+                        <!-- Manitas -->
+                        <circle cx="45" cy="75" r="5" fill="#cd853f" stroke="#8b4513" stroke-width="1"/>
+                        <circle cx="75" cy="75" r="5" fill="#cd853f" stroke="#8b4513" stroke-width="1"/>
+                        <!-- Patitas -->
+                        <ellipse cx="45" cy="108" rx="8" ry="4" fill="#a0522d" stroke="#8b4513" stroke-width="1" />
+                        <ellipse cx="75" cy="108" rx="8" ry="4" fill="#a0522d" stroke="#8b4513" stroke-width="1" />
+                    </svg>
+                </div>
+            </footer>
+        </section>
+
+
+        <!-- ================= PANTALLA 3: DIPLOMA FINAL Y PREMIACIÓN ================= -->
+        <section id="screen-victory" class="screen">
+            <!-- Canvas para efecto Confeti -->
+            <canvas id="victory-confetti" class="confetti-canvas"></canvas>
+            
+            <div class="victory-header">
+                <h1>¡Misión Cumplida, Guardián! 🎉</h1>
+                <p>Has protegido la naturaleza y hecho felices a sus habitantes.</p>
+            </div>
+
+            <!-- Estructura del Diploma Imprimible -->
+            <div class="diploma-wrapper" id="printable-diploma">
+                <div class="diploma-border">
+                    <div class="diploma-background">
+                        <!-- Elementos decorativos del Diploma -->
+                        <div class="diploma-corner top-left">🍃</div>
+                        <div class="diploma-corner top-right">🌸</div>
+                        <div class="diploma-corner bottom-left">🐿️</div>
+                        <div class="diploma-corner bottom-right">🐸</div>
+
+                        <div class="diploma-content">
+                            <span class="diploma-subtitle">Reconocimiento Oficial</span>
+                            <h2 class="diploma-title">GUARDIÁN DE LA NATURALEZA</h2>
+                            <p class="diploma-text">Se otorga con gran orgullo a:</p>
+                            <h3 class="diploma-recipient" id="diploma-player-name">Nombre del Niño</h3>
+                            <p class="diploma-description">
+                                Por demostrar amor, cuidado y empatía hacia los seres vivos, clasificar los residuos correctamente y ayudar a conservar las plantas y animales del planeta.
+                            </p>
+                            
+                            <!-- Estrellas y Medallas conseguidas -->
+                            <div class="diploma-rewards">
+                                <div class="diploma-badge-card" id="diploma-badge-plants">
+                                    <div class="medal-graphic badge-plants-color">🌿</div>
+                                    <span class="medal-label">Amigo de las Plantas</span>
+                                </div>
+                                <div class="diploma-stars-center">
+                                    <div class="diploma-stars-row" id="diploma-stars-list">
+                                        ⭐⭐⭐⭐⭐
+                                    </div>
+                                    <span class="stars-label">5 Estrellas de Cuidado</span>
+                                </div>
+                                <div class="diploma-badge-card" id="diploma-badge-animals">
+                                    <div class="medal-graphic badge-animals-color">🐾</div>
+                                    <span class="medal-label">Protector de Animales</span>
+                                </div>
+                            </div>
+
+                            <div class="diploma-footer">
+                                <div class="diploma-signature">
+                                    <svg viewBox="0 0 100 40" class="signature-svg">
+                                        <path d="M10 25 C30 5, 40 35, 60 20 C70 15, 80 30, 95 10" fill="none" stroke="#2e7d32" stroke-width="2" stroke-linecap="round"/>
+                                    </svg>
+                                    <span class="signature-line"></span>
+                                    <span>Lula la Ardilla</span>
+                                </div>
+                                <div class="diploma-date" id="diploma-current-date">
+                                    Fecha: 19 de Junio de 2026
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Botones de Acción -->
+            <div class="victory-actions">
+                <button type="button" id="btn-print-diploma" class="btn-large">
+                    <span>🖨️ Imprimir Diploma</span>
+                </button>
+                <button type="button" id="btn-restart" class="btn-large btn-orange">
+                    <span>🔄 Jugar de Nuevo</span>
+                </button>
+            </div>
+            
+            <button type="button" id="btn-view-evaluation-final" class="btn-text">
+                📊 Ver Reporte de Evaluación para el Docente
+            </button>
+        </section>
+
+
+        <!-- ================= PANEL DE EVALUACIÓN DOCENTE (MODAL) ================= -->
+        <section id="modal-teacher-dashboard" class="modal-overlay">
+            <div class="modal-content">
+                <header class="modal-header">
+                    <h2>📊 Panel de Evaluación Docente</h2>
+                    <button type="button" id="btn-close-modal" class="btn-close">&times;</button>
+                </header>
+                
+                <!-- Filtro / Resumen General -->
+                <div class="modal-body" id="modal-dashboard-body">
+                    <p class="evaluation-intro">
+                        Este reporte evalúa los aprendizajes de los alumnos basados en el PDA de conciencia socioambiental y cuidado de la naturaleza.
+                    </p>
+                    
+                    <div class="evaluation-info-box">
+                        <span id="eval-student-info"><strong>Alumno(s):</strong> Guardiana/o | <strong>Edad:</strong> 4 años</span>
+                        <span id="eval-date-info"><strong>Fecha:</strong> 19/06/2026</span>
+                    </div>
+
+                    <!-- Tabla de Indicadores de Logro -->
+                    <div class="evaluation-table-wrapper">
+                        <table class="evaluation-table">
+                            <thead>
+                                <tr>
+                                    <th>Criterio de Evaluación</th>
+                                    <th>Indicador de Logro</th>
+                                    <th>Resultado / Observaciones</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <tr>
+                                    <td><strong>Identifica plantas y animales</strong></td>
+                                    <td>Nivel 1: Ubicación correcta en hábitats (Bosque, Granja, Jardín, Estanque).</td>
+                                    <td id="eval-kpi-1">No completado</td>
+                                </tr>
+                                <tr>
+                                    <td><strong>Reconoce acciones de cuidado</strong></td>
+                                    <td>Nivel 2: Selección de acciones protectoras para plantas y evitar dañarlas.</td>
+                                    <td id="eval-kpi-2">No completado</td>
+                                </tr>
+                                <tr>
+                                    <td><strong>Muestra empatía hacia seres vivos</strong></td>
+                                    <td>Nivel 3: Identificación de conductas de respeto y empatía hacia los animales.</td>
+                                    <td id="eval-kpi-3">No completado</td>
+                                </tr>
+                                <tr>
+                                    <td><strong>Clasifica conductas socioambientales</strong></td>
+                                    <td>Nivel 4: Agrupación en Cuidamos/No cuidamos la naturaleza.</td>
+                                    <td id="eval-kpi-4">No completado</td>
+                                </tr>
+                                <tr>
+                                    <td><strong>Propone formas de conservar</strong></td>
+                                    <td>Nivel 5: Limpieza de parque, clasificación de residuos e idea ambiental.</td>
+                                    <td id="eval-kpi-5">No completado</td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+
+                    <!-- Respuestas a preguntas reflexivas (Nivel 5 años) -->
+                    <div class="evaluation-reflections" id="eval-reflections-container">
+                        <h3>💭 Comprensión Reflexiva (Desafíos de 5 años):</h3>
+                        <ul id="eval-reflections-list">
+                            <li><em>No aplica para menores de 5 años o nivel aún no jugado.</em></li>
+                        </ul>
+                    </div>
+
+                    <!-- Botones de Acción dentro de la Evaluación -->
+                    <div class="modal-footer">
+                        <button type="button" id="btn-print-eval" class="btn-small">🖨️ Imprimir Reporte</button>
+                        <button type="button" id="btn-reset-eval" class="btn-small btn-danger">🗑️ Limpiar Datos</button>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- MODAL DE ACCESO / CONTROL PARENTAL O DOCENTE -->
+        <section id="modal-gate" class="modal-overlay">
+            <div class="modal-content modal-content-small">
+                <header class="modal-header">
+                    <h2>🔒 Acceso Restringido</h2>
+                    <button type="button" id="btn-close-gate" class="btn-close">&times;</button>
+                </header>
+                <div class="modal-body">
+                    <p>Por seguridad, resuelve esta operación para acceder a la evaluación:</p>
+                    <div class="gate-math-challenge">
+                        <span id="gate-math-text">3 + 4 = ?</span>
+                        <input type="number" id="gate-math-answer" class="input-text center-text" placeholder="?" min="0" max="20">
+                    </div>
+                    <div id="gate-error-message" class="error-text hidden">Respuesta incorrecta. ¡Inténtalo de nuevo!</div>
+                    <button type="button" id="btn-submit-gate" class="btn-large full-width">Verificar</button>
+                </div>
+            </div>
+        </section>
+
+    </main>
+
+    <script src="script.js"></script>
+</body>
+</html>
